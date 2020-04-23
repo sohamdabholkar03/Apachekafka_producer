@@ -1,13 +1,13 @@
 package com.kafka.producer;
 
-import com.kafka.producer.Producer.FixedRateProducer;
-import com.kafka.producer.Producer.HelloKafkaProducer;
-import com.kafka.producer.Producer.KafkaKeyProducer;
+import com.kafka.producer.Producer.EmployeeJsonProducer;
+import com.kafka.producer.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.time.LocalDate;
 
 @SpringBootApplication
 //@EnableScheduling
@@ -19,23 +19,31 @@ public class ProducerApplication implements CommandLineRunner {
 //	@Autowired
 //	private FixedRateProducer fixedRateProducer;
 
-	@Autowired
-	private KafkaKeyProducer kafkaKeyProducer;
+//	@Autowired
+//////	private KafkaKeyProducer kafkaKeyProducer;
 
-	public static void main(String[] args) {
-		System.out.println("producer");
-		SpringApplication.run(ProducerApplication.class, args);
-	}
+    @Autowired
+    private EmployeeJsonProducer employeeJsonProducer;
 
-	@Override
-	public void run(String... args) {
-		for(int i=0;i<30;i++)
-		{
-			String key= "key-"+(i%4);
-			String Data="data" +i+"with key"+key;
-			kafkaKeyProducer.send(key,Data);
-		}
+    public static void main(String[] args) {
+        System.out.println("producer");
+        SpringApplication.run(ProducerApplication.class, args);
+    }
 
-		//helloKafkaProducer.sendHello("Soham"+Math.random());
-	}
+    @Override
+    public void run(String... args) throws Exception {
+        for (int i = 0; i < 5; i++) {
+            Employee employee = new Employee("emp" + i, "name" + i, LocalDate.now());
+            employeeJsonProducer.sendmessage(employee);
+        }
+
+//		for(int i=0;i<30;i++)
+//		{
+//			String key= "key-"+(i%4);
+//			String Data="data" +i+"with key"+key;
+//			kafkaKeyProducer.send(key,Data);
+//		}
+
+        //helloKafkaProducer.sendHello("Soham"+Math.random());
+    }
 }
